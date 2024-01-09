@@ -1,0 +1,49 @@
+# Define hash table with environment and tier values
+$environmentTiers = @{
+    QA = "QA_Value"
+    preprod = @{
+        Tier0 = "Preprod_Tier0_Value"
+        Tier1 = "Preprod_Tier1_Value"
+        Tier2 = "Preprod_Tier2_Value"
+    }
+    prod = @{
+        Tier0 = "Prod_Tier0_Value"
+        Tier1 = "Prod_Tier1_Value"
+        Tier2 = "Prod_Tier2_Value"
+    }
+}
+
+# Prompt user to select environment
+$selectedEnvironment = Read-Host "Select environment (1. QA, 2. preprod, 3. prod)"
+
+# Validate user input
+switch ($selectedEnvironment) {
+    "1" { $selectedEnvironment = "QA" }
+    "2" { $selectedEnvironment = "preprod" }
+    "3" { $selectedEnvironment = "prod" }
+    Default { Write-Host "Invalid selection. Exiting script."; exit }
+}
+
+# Check if the selected environment is QA
+if ($selectedEnvironment -eq "QA") {
+    # Retrieve the value from the hash table for QA
+    $value = $environmentTiers[$selectedEnvironment]
+} else {
+    # Prompt user to select tier based on the chosen environment (excluding QA)
+    $selectedTier = Read-Host "Select tier (1. Tier0, 2. Tier1, 3. Tier2)"
+
+    # Validate user input and retrieve corresponding value from hash table
+    switch ($selectedTier) {
+        "1" { $selectedTier = "Tier0" }
+        "2" { $selectedTier = "Tier1" }
+        "3" { $selectedTier = "Tier2" }
+        Default { Write-Host "Invalid selection. Exiting script."; exit }
+    }
+
+    # Retrieve the value from the hash table for preprod or prod
+    $value = $environmentTiers[$selectedEnvironment][$selectedTier]
+}
+
+# Display the selected environment and corresponding value
+Write-Host "Selected Environment: $selectedEnvironment"
+Write-Host "Corresponding Value: $value"
