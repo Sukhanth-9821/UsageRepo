@@ -1,0 +1,35 @@
+param (
+    [string]$organizationUrl = "https://dev.azure.com/YourOrganization",
+    [string]$projectName = "YourProject",
+    [string]$variableGroupName = "YourVariableGroup",
+    [string]$pat = "YourPersonalAccessToken",
+    [string]$variableNameToUpdate = "VariableToUpdate",
+    [string]$newVariableValue = "NewValue"
+)
+
+# Base64 encode the Personal Access Token (PAT)
+$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$($pat)"))
+
+# Get the current variable group details
+$variableGroupUrl = "$organizationUrl/$projectName/_apis/distributedtask/variablegroups?groupName=$variableGroupName&api-version=7.1-preview.1"
+$variableGroup = Invoke-RestMethod -Uri $variableGroupUrl -Method Get -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
+
+# Find the index of the variable to update
+$variableIndex = $variableGroup.value.variables.FindIndex({ $_.name -eq $variableNameToUpdate })
+
+# Update the variable value
+if ($variableIndex -ge 0) {
+    $variableGroup.value.variables[$variableIndex].value = $newVariableValue
+
+    # Update the variable group with the modified values
+    $updateUrl = "$organizationUrl/$projectName/_apis/distributedtask/variablegroups/$($variableGroup.value.id)?api-version=7.1-preview.1"
+    $updateBody = @{
+        variables = $variableGroup.value.variables
+    } | ConvertTo-Json
+
+    Invoke-RestMethod -Uri $updateUrl -Method Put -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -Body $updateBody -ContentType "application/json"
+    
+    Write-Host "Variable '$variableNameToUpdate' in variable group '$variableGroupName' updated successfully."
+} else {
+    Write-Host "Variable '$variableNameToUpdate' not found in variable group '$variableGroupName'."
+}
