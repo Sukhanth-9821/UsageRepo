@@ -1,0 +1,40 @@
+# Sample data for dynamic content
+$variableData = @(
+    @{
+        name = "-xyz"
+        isSecret = $true
+        value = "ABCBDEF"
+    },
+    @{
+        name = "sdsa-xyz"
+        isSecret = $true
+        value = "AB23456"
+    }
+)
+
+# Constants
+$id = 37
+$type = "VSTS"
+$name = "QA settings"
+
+# Create the main JSON structure
+$jsonObject = @{
+    id = $id
+    type = $type
+    name = $name
+    variables = @{}
+}
+
+# Add dynamic variables to the JSON structure
+foreach ($variable in $variableData) {
+    $jsonObject["variables"][$variable["name"]] = @{
+        isSecret = $variable["isSecret"]
+        value = $variable["value"]
+    }
+}
+
+# Convert the PowerShell object to JSON
+$jsonString = $jsonObject | ConvertTo-Json
+
+# Output the JSON string
+Write-Output $jsonString
