@@ -1,0 +1,5 @@
+$certs = Get-ChildItem -Path Cert:\CurrentUser\My
+foreach ($cert in $certs) {
+    $certPath = "C:\Backup\" + $cert.Subject.Replace(" ", "_") + ".pfx"
+    Export-PfxCertificate -Cert $cert -FilePath $certPath -Password (ConvertTo-SecureString -String "YourPassword" -Force -AsPlainText)
+}
