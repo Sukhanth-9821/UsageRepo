@@ -1,0 +1,19 @@
+try {
+    $response = Invoke-WebRequest -Uri "https://example.com" -ErrorVariable ErrorVar -ErrorAction Stop
+} catch {
+    $errorMessage = $_.Exception.Message
+    $errorDetails = $_.ErrorDetails.Message
+    Write-Host "Error Message: $errorMessage"
+    Write-Host "Error Details: $errorDetails"
+}
+
+if ($response) {
+    # Process the successful response here
+} else {
+    # Process the error response here
+    if ($ErrorVar) {
+        Write-Host "Error Status Code: $($ErrorVar.Response.StatusCode)"
+        Write-Host "Error Response Content: $($ErrorVar.Response.Content)"
+        # You can also access other properties of the error response such as Headers, RawContent, etc.
+    }
+}
