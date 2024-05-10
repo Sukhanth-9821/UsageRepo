@@ -1,1 +1,24 @@
 
+# Path to the XML file
+$xmlFilePath = "C:\path\to\your\file.xml"
+
+# Content to add
+$uniqueHostContent = "<uniquehost>1234<\uniquehost>"
+$uniqueHostPrimeContent = "<uniquehostprime>123ghfd4<\uniquehostprime>"
+
+# Load the XML file
+$xml = [xml](Get-Content $xmlFilePath)
+
+# Check if the nodes already exist, if not, add them
+if (-not ($xml.SelectSingleNode("//uniquehost"))) {
+    $xml.DocumentElement.AppendChild($xml.CreateElement("uniquehost")).InnerText = "1234"
+}
+
+if (-not ($xml.SelectSingleNode("//uniquehostprime"))) {
+    $xml.DocumentElement.AppendChild($xml.CreateElement("uniquehostprime")).InnerText = "123ghfd4"
+}
+
+# Save the modified XML back to the file
+$xml.Save($xmlFilePath)
+
+Write-Host "Nodes added to the XML file."
