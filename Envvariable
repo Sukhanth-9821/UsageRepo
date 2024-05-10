@@ -1,0 +1,16 @@
+# Set Java Home Path
+$javaHome = "C:\Path\to\Java"
+
+# Set Environment Variable JAVA_HOME
+[Environment]::SetEnvironmentVariable("JAVA_HOME", $javaHome, [System.EnvironmentVariableTarget]::Machine)
+
+# Get Current System PATH
+$currentPath = [Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::Machine)
+
+# Append Java Home to PATH if not already present
+if (-not $currentPath.Contains("$javaHome\bin")) {
+    $newPath = $currentPath + ";$javaHome\bin"
+    [Environment]::SetEnvironmentVariable("PATH", $newPath, [System.EnvironmentVariableTarget]::Machine)
+}
+
+Write-Host "Java Home added to system environment variables and PATH."
