@@ -22,3 +22,5 @@ if (-not ($xml.SelectSingleNode("//uniquehostprime"))) {
 $xml.Save($xmlFilePath)
 
 Write-Host "Nodes added to the XML file."
+###
+cert New-SelfSignedCertificate -DnsName "Senv:computername. Senv:USERONSDOMAIN" -CertStoreLocation "cert: \LocalMachine My NotAfter (Get-Date) AddYears (28)File EditRemove-Item-Path WSMan: \Localhost\listener\listener Recurse New-Item -Path WSMan: \Localhost\listener -Transport HTTPS Address CertificateThumbPrint Scert. Thumbprint-ForceExport-Certificate Cert Scert -FilePath C:\temp\cert Import-Certificate Filepath 'C:\temp\cert CertStorelocation 'Cert:\LocalMachine\Root
