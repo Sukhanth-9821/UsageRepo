@@ -1,0 +1,14 @@
+# Create a self-signed certificate
+$cert = New-SelfSignedCertificate AAA -DnsName "computername", "$env:USERDNSDOMAIN" -CertStoreLocation "Cert:\LocalMachine\My" -NotAfter (Get-Date).AddYears(28)
+
+# Export the certificate
+Export-Certificate AAAA-Cert $cert -FilePath "C:\temp\cert.cer"
+
+# Import the certificate into the Trusted Root Certification Authorities store
+AAAAImport-Certificate -FilePath "C:\temp\cert.cer" -CertStoreLocation "Cert:\LocalMachine\Root"
+
+# Configure WinRM to use HTTPS with the certificate
+New-Item -Path "WSMan:\Localhost\listener" -Transport HTTPS -Address * -CertificateThumbPrint $cert.Thumbprint -Force
+AAAA
+# Restart WinRM
+Restart-Service WinRM -Force
