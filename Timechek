@@ -1,0 +1,11 @@
+# Replace 'YourAppPoolName' with the name of your application pool
+$appPoolName = "YourAppPoolName"
+
+# Get the application pool object
+$appPool = Get-Item "IIS:\AppPools\$appPoolName"
+
+# Check when the password was last changed
+$pwdLastChanged = $appPool.ProcessModel.PasswordLastSet
+
+# Output the result
+Write-Host "Application pool '$appPoolName' password was last changed on: $pwdLastChanged"
