@@ -1,0 +1,11 @@
+$source = "D:\IIS"
+$destination = "D:\trstfolder"
+
+Get-ChildItem -Path $source -Recurse -Filter *.conf | ForEach-Object {
+    $destinationPath = $_.FullName -replace [regex]::Escape($source), $destination
+    $destinationFolder = Split-Path $destinationPath -Parent
+    if (!(Test-Path -Path $destinationFolder)) {
+        New-Item -ItemType Directory -Path $destinationFolder -Force
+    }
+    Copy-Item -Path $_.FullName -Destination $destinationPath -Force
+}
