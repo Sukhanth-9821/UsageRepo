@@ -1,0 +1,22 @@
+# Get a list of all COM ports
+$comPorts = Get-WmiObject Win32_SerialPort
+
+foreach ($comPort in $comPorts) {
+    $portName = $comPort.DeviceID
+    $portDesc = $comPort.Description
+
+    Write-Host "Testing connectivity for $portName ($portDesc)..."
+
+    try {
+        $port = new-Object System.IO.Ports.SerialPort $portName,9600,None,8,one
+        $port.Open()
+        if ($port.IsOpen) {
+            Write-Host "$portName is open and connected."
+            $port.Close()
+        } else {
+            Write-Host "$portName is not connected."
+        }
+    } catch {
+        Write-Host "Failed to open $portName. Error: $_"
+    }
+}
