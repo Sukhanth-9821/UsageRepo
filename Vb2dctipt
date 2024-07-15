@@ -1,0 +1,69 @@
+Sub CreateAWSIAMPresentation()
+    Dim pptApp As Object
+    Dim pptPres As Object
+    Dim pptSlide As Object
+    Dim pptShape As Object
+    
+    ' Create a new PowerPoint application
+    Set pptApp = CreateObject("PowerPoint.Application")
+    pptApp.Visible = True
+    
+    ' Add a new presentation
+    Set pptPres = pptApp.Presentations.Add
+    
+    ' Add slides with interactive backgrounds and images
+    AddSlideWithBackground pptPres, "Title Slide", "AWS IAM and Advanced IAM Topics", "An Overview", "C:\Path\To\Your\BackgroundImage1.jpg"
+    AddSlideWithBackground pptPres, "Introduction to AWS IAM", "• What is IAM?\n• Importance of IAM\n• Key components of IAM (Users, Groups, Roles, Policies)", "C:\Path\To\Your\BackgroundImage2.jpg"
+    AddSlideWithImage pptPres, "IAM Policies", "• Policy Structure\n• Types of Policies (Managed Policies, Inline Policies)\n• Policy Evaluation Logic", "C:\Path\To\Your\Image1.jpg"
+    AddSlideWithImage pptPres, "Advanced IAM Topics", "• IAM Roles and Trust Policies\n• Cross-Account Access\n• IAM Best Practices\n• Monitoring and Logging IAM Activities", "C:\Path\To\Your\Image2.jpg"
+    AddSlideWithImage pptPres, "IAM Roles", "• What are IAM Roles?\n• Creating and Using IAM Roles\n• Role Assumption and Trust Policies", "C:\Path\To\Your\Image3.jpg"
+    AddSlideWithImage pptPres, "Cross-Account Access", "• Introduction to Cross-Account Access\n• Creating Policies for Cross-Account Access\n• Best Practices", "C:\Path\To\Your\Image4.jpg"
+    AddSlideWithImage pptPres, "IAM Best Practices", "• Least Privilege Principle\n• Regularly Review IAM Policies\n• Enable MFA\n• Use IAM Roles for Applications", "C:\Path\To\Your\Image5.jpg"
+    AddSlideWithImage pptPres, "Monitoring and Logging IAM Activities", "• CloudTrail for IAM\n• AWS Config Rules\n• Security Hub and GuardDuty\n• Audit and Compliance Reporting", "C:\Path\To\Your\Image6.jpg"
+    AddSlideWithBackground pptPres, "Conclusion", "• Summary of IAM and Advanced IAM Topics\n• Next Steps\n• Q&A", "C:\Path\To\Your\BackgroundImage3.jpg"
+    
+    ' Clean up
+    Set pptShape = Nothing
+    Set pptSlide = Nothing
+    Set pptPres = Nothing
+    Set pptApp = Nothing
+    
+    MsgBox "Presentation created successfully!"
+End Sub
+
+Sub AddSlideWithBackground(pptPres As Object, title As String, content As String, bgImagePath As String)
+    Dim pptSlide As Object
+    Dim pptShape As Object
+    
+    ' Add a new slide
+    Set pptSlide = pptPres.Slides.Add(pptPres.Slides.Count + 1, ppLayoutText)
+    
+    ' Set slide title
+    pptSlide.Shapes.Title.TextFrame.TextRange.Text = title
+    
+    ' Set slide content
+    pptSlide.Shapes.Placeholders(2).TextFrame.TextRange.Text = content
+    
+    ' Add background image
+    Set pptShape = pptSlide.Shapes.AddPicture(bgImagePath, _
+                                              msoFalse, msoCTrue, 0, 0, pptPres.PageSetup.SlideWidth, pptPres.PageSetup.SlideHeight)
+    pptShape.ZOrder msoSendToBack
+End Sub
+
+Sub AddSlideWithImage(pptPres As Object, title As String, content As String, imagePath As String)
+    Dim pptSlide As Object
+    Dim pptShape As Object
+    
+    ' Add a new slide
+    Set pptSlide = pptPres.Slides.Add(pptPres.Slides.Count + 1, ppLayoutText)
+    
+    ' Set slide title
+    pptSlide.Shapes.Title.TextFrame.TextRange.Text = title
+    
+    ' Set slide content
+    pptSlide.Shapes.Placeholders(2).TextFrame.TextRange.Text = content
+    
+    ' Add image
+    Set pptShape = pptSlide.Shapes.AddPicture(imagePath, _
+                                              msoFalse, msoCTrue, 100, 100, 400, 300)
+End Sub
