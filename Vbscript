@@ -1,0 +1,66 @@
+Sub CreateAWSIAMPresentation()
+    Dim pptApp As Object
+    Dim pptPres As Object
+    Dim pptSlide As Object
+    Dim pptTextbox As Object
+    
+    ' Create a new PowerPoint application
+    Set pptApp = CreateObject("PowerPoint.Application")
+    pptApp.Visible = True
+    
+    ' Add a new presentation
+    Set pptPres = pptApp.Presentations.Add
+    
+    ' Slide 1: Title Slide
+    Set pptSlide = pptPres.Slides.Add(1, ppLayoutTitle)
+    pptSlide.Shapes.Title.TextFrame.TextRange.Text = "AWS IAM and Advanced IAM Topics"
+    pptSlide.Shapes.Placeholders(2).TextFrame.TextRange.Text = "An Overview"
+    
+    ' Slide 2: IAM Introduction
+    Set pptSlide = pptPres.Slides.Add(2, ppLayoutText)
+    pptSlide.Shapes.Title.TextFrame.TextRange.Text = "Introduction to AWS IAM"
+    pptSlide.Shapes.Placeholders(2).TextFrame.TextRange.Text = "• What is IAM?\n• Importance of IAM\n• Key components of IAM (Users, Groups, Roles, Policies)"
+    
+    ' Slide 3: IAM Policies
+    Set pptSlide = pptPres.Slides.Add(3, ppLayoutText)
+    pptSlide.Shapes.Title.TextFrame.TextRange.Text = "IAM Policies"
+    pptSlide.Shapes.Placeholders(2).TextFrame.TextRange.Text = "• Policy Structure\n• Types of Policies (Managed Policies, Inline Policies)\n• Policy Evaluation Logic"
+    
+    ' Slide 4: Advanced IAM Topics
+    Set pptSlide = pptPres.Slides.Add(4, ppLayoutText)
+    pptSlide.Shapes.Title.TextFrame.TextRange.Text = "Advanced IAM Topics"
+    pptSlide.Shapes.Placeholders(2).TextFrame.TextRange.Text = "• IAM Roles and Trust Policies\n• Cross-Account Access\n• IAM Best Practices\n• Monitoring and Logging IAM Activities"
+    
+    ' Slide 5: IAM Roles
+    Set pptSlide = pptPres.Slides.Add(5, ppLayoutText)
+    pptSlide.Shapes.Title.TextFrame.TextRange.Text = "IAM Roles"
+    pptSlide.Shapes.Placeholders(2).TextFrame.TextRange.Text = "• What are IAM Roles?\n• Creating and Using IAM Roles\n• Role Assumption and Trust Policies"
+    
+    ' Slide 6: Cross-Account Access
+    Set pptSlide = pptPres.Slides.Add(6, ppLayoutText)
+    pptSlide.Shapes.Title.TextFrame.TextRange.Text = "Cross-Account Access"
+    pptSlide.Shapes.Placeholders(2).TextFrame.TextRange.Text = "• Introduction to Cross-Account Access\n• Creating Policies for Cross-Account Access\n• Best Practices"
+    
+    ' Slide 7: IAM Best Practices
+    Set pptSlide = pptPres.Slides.Add(7, ppLayoutText)
+    pptSlide.Shapes.Title.TextFrame.TextRange.Text = "IAM Best Practices"
+    pptSlide.Shapes.Placeholders(2).TextFrame.TextRange.Text = "• Least Privilege Principle\n• Regularly Review IAM Policies\n• Enable MFA\n• Use IAM Roles for Applications"
+    
+    ' Slide 8: Monitoring and Logging IAM Activities
+    Set pptSlide = pptPres.Slides.Add(8, ppLayoutText)
+    pptSlide.Shapes.Title.TextFrame.TextRange.Text = "Monitoring and Logging IAM Activities"
+    pptSlide.Shapes.Placeholders(2).TextFrame.TextRange.Text = "• CloudTrail for IAM\n• AWS Config Rules\n• Security Hub and GuardDuty\n• Audit and Compliance Reporting"
+    
+    ' Slide 9: Conclusion
+    Set pptSlide = pptPres.Slides.Add(9, ppLayoutText)
+    pptSlide.Shapes.Title.TextFrame.TextRange.Text = "Conclusion"
+    pptSlide.Shapes.Placeholders(2).TextFrame.TextRange.Text = "• Summary of IAM and Advanced IAM Topics\n• Next Steps\n• Q&A"
+    
+    ' Clean up
+    Set pptTextbox = Nothing
+    Set pptSlide = Nothing
+    Set pptPres = Nothing
+    Set pptApp = Nothing
+    
+    MsgBox "Presentation created successfully!"
+End Sub
