@@ -1,0 +1,64 @@
+# Define source and destination paths
+$sourcePath = "\\SourceServer\Path\To\Directory"
+$destinationPaths = @("\\DestinationServer1\Path\To\Directory", "\\DestinationServer2\Path\To\Directory", "\\DestinationServer3\Path\To\Directory", "\\DestinationServer4\Path\To\Directory")
+
+# Function to get folder structure and file list
+function Get-FolderStructureAndFileList {
+    param (
+        [string]$path
+    )
+
+    $folders = Get-ChildItem -Path $path -Recurse -Directory
+    $files = Get-ChildItem -Path $path -Recurse -File
+    return [PSCustomObject]@{
+        Folders = $folders
+        Files = $files
+    }
+}
+
+# Get folder structure and file list for the source path
+$sourceResult = Get-FolderStructureAndFileList -path $sourcePath
+
+# Compare results with each destination path
+foreach ($destinationPath in $destinationPaths) {
+    $destinationResult = Get-FolderStructureAndFileList -path $destinationPath
+
+    Write-Output "Comparison for $destinationPath:"
+    Write-Output "Source - Folders: $($sourceResult.Folders.Count), Files: $($sourceResult.Files.Count)"
+    Write-Output "Destination - Folders: $($destinationResult.Folders.Count), Files: $($destinationResult.Files.Count)"
+    
+    if ($sourceResult.Folders.Count -eq $destinationResult.Folders.Count -and $sourceResult.Files.Count -eq $destinationResult.Files.Count) {
+        Write-Output "The folder structure and file count match."
+    } else {
+        Write-Output "The folder structure and/or file count do not match."
+
+        # Find missing files and copy them
+        $missingFiles = $sourceResult.Files | Where-Object {
+            $filePath = $_.FullName.Replace($sourcePath, "").TrimStart("\")
+            -not ($destinationResult.Files.FullName -contains (Join-Path $destinationPath $filePath))
+        }
+
+        if ($missingFiles.Count -gt 0) {
+            Write-Output "Copying missing files to $destinationPath..."
+
+            foreach ($file in $missingFiles) {
+                $relativePath = $file.FullName.Replace($sourcePath, "").TrimStart("\")
+                $destinationFilePath = Join-Path $destinationPath $relativePath
+                
+                # Ensure the destination directory exists
+                $destinationDir = Split-Path $destinationFilePath -Parent
+                if (!(Test-Path $destinationDir)) {
+                    New-Item -ItemType Directory -Path $destinationDir -Force
+                }
+
+                # Copy the file
+                Copy-Item -Path $file.FullName -Destination $destinationFilePath -Force
+            }
+
+            Write-Output "Missing files copied to $destinationPath."
+        } else {
+            Write-Output "No missing files found."
+        }
+    }
+    Write-Output ""
+}
