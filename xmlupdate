@@ -1,0 +1,14 @@
+# Path to the XML file
+$xmlFilePath = "path\to\your\file.xml"
+
+# Load the XML file
+[xml]$xml = Get-Content $xmlFilePath
+
+# Update the values
+$xml.'controller-info'.'application-name' = "ABCD"
+$xml.'controller-info'.'account-key' = "EFGHSS"
+
+# Save the updated XML back to the file
+$xml.Save($xmlFilePath)
+
+Write-Output "XML file updated successfully."
