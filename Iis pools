@@ -1,0 +1,19 @@
+Import-Module WebAdministration
+
+# Get all application pools
+$appPools = Get-ChildItem IIS:\AppPools
+
+foreach ($appPool in $appPools) {
+    $appPoolName = $appPool.Name
+    $appPoolProperties = Get-ItemProperty IIS:\AppPools\$appPoolName
+
+    [PSCustomObject]@{
+        Name                       = $appPoolName
+        Enable32BitAppOnWin64      = $appPoolProperties.enable32BitAppOnWin64
+        ManagedPipelineMode        = $appPoolProperties.managedPipelineMode
+        IdleTimeoutAction          = $appPoolProperties.processModel.idleTimeoutAction
+        LoadUserProfile            = $appPoolProperties.processModel.loadUserProfile
+        GenerateRecycleEventLogEntry = $appPoolProperties.recycle.eventlogFlag
+        SpecificTimes              = $appPoolProperties.recycle.specificTimes
+    }
+}
