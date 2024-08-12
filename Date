@@ -1,0 +1,5 @@
+$startDate = Get-Date "2023-08-01"
+$endDate = Get-Date "2023-08-10"
+
+Get-ChildItem -Path "C:\Your\Directory\Path" -File |
+    Where-Object { $_.LastWriteTime -ge $startDate -and $_.LastWriteTime -le $endDate }
