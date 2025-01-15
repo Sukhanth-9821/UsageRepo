@@ -1,0 +1,26 @@
+# Retrieve the SonarQube endpoint details
+$endpointName = "YourSonarQubeServiceConnectionName"
+$endpoint = Get-VstsEndpoint -Name $endpointName -Require $true
+
+# Extract SonarQube URL and token
+$sonarHostUrl = $endpoint.url
+$sonarToken = $endpoint.Authorization.Parameters.Token
+
+# Begin SonarScanner analysis
+Write-Host "Starting SonarScanner..."
+dotnet sonarscanner begin `
+    /k:"YourProjectKey" `
+    /d:sonar.host.url="$sonarHostUrl" `
+    /d:sonar.login="$sonarToken"
+
+# Build your project
+Write-Host "Building the project..."
+dotnet build
+
+# Run tests (optional)
+Write-Host "Running tests..."
+dotnet test
+
+# End SonarScanner analysis
+Write-Host "Ending SonarScanner..."
+dotnet sonarscanner end /d:sonar.login="$sonarToken"
