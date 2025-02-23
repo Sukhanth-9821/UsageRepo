@@ -1,0 +1,10 @@
+$NexusURL = "http://<NEXUS_SERVER>/repository/<REPO_NAME>/<ARTIFACT_PATH>"
+$ArtifactPath = "C:\temp\artifact.zip"  # Local path to store the artifact
+$Username = "your_username"
+$Password = "your_password"
+
+# Download artifact using Invoke-WebRequest
+$securePassword = ConvertTo-SecureString $Password -AsPlainText -Force
+$credential = New-Object System.Management.Automation.PSCredential ($Username, $securePassword)
+
+Invoke-WebRequest -Uri $NexusURL -OutFile $ArtifactPath -Credential $credential
