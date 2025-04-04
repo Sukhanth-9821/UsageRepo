@@ -1,0 +1,109 @@
+That error — “The object exporter specified was not found” — typically means WMI connectivity is partially working, but the remote call can’t complete because the dynamic DCOM port used for the WMI response is being blocked by a firewall.
+
+
+---
+
+Root Cause
+
+WMI uses TCP port 135 to start the conversation and then switches to a random high-numbered dynamic port (typically between 49152–65535). If those dynamic ports are blocked, you get this lovely error.
+
+
+---
+
+Fix Options
+
+Option 1: Open Firewall Ports
+
+On the target machine, allow:
+
+TCP 135 (WMI uses this for RPC endpoint mapper)
+
+TCP 49152–65535 (default dynamic port range)
+
+
+On both the Windows Defender Firewall and any network firewall in between.
+
+You can check if they're open using:
+
+Test-NetConnection <target> -Port 135
+
+
+---
+
+Option 2: Restrict WMI to Use a Fixed Port
+
+If you can’t open the full dynamic range, you can force WMI to use a specific port (e.g., 24158). Here’s how:
+
+Steps (on the target machine):
+
+1. Open Command Prompt as Admin
+
+
+2. Run:
+
+netsh int ipv4 add excludedportrange protocol=tcp startport=24158 numberofports=1
+
+
+3. Set WMI to use that port:
+
+winmgmt -standalonehost
+
+
+4. Open Registry Editor (regedit)
+
+
+5. Navigate to:
+
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Rpc\Internet
+
+
+6. Create a new DWORD:
+
+Name: PortsInternetAvailable
+
+Value: Y
+
+
+
+7. Create a new Multi-String Value:
+
+Name: Ports
+
+Value: 24158
+
+
+
+8. Create a new String Value:
+
+Name: UseInternetPorts
+
+Value: Y
+
+
+
+9. Reboot the machine.
+
+
+10. Allow TCP 135 and TCP 24158 in the firewall.
+
+
+
+
+---
+
+Option 3: Use PowerShell Remoting Instead (If Allowed)
+
+If your org allows it, using PowerShell Remoting (Invoke-Command) over WinRM is more firewall-friendly.
+
+
+---
+
+Test Again After Fixing:
+
+Get-WmiObject -Class Win32_OperatingSystem -ComputerName <target> -Credential (Get-Credential)
+
+
+---
+
+Let me know if you want a GPO-based method for pushing this config across multiple machines or if you’re doing this on a single host manually.
+
