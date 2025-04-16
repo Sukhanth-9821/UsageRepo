@@ -1,0 +1,18 @@
+Import-Module WebAdministration
+
+$sites = Get-Website
+
+foreach ($site in $sites) {
+    $path = $site.physicalPath
+
+    # Resolve environment variables like %SystemDrive%
+    $resolvedPath = [Environment]::ExpandEnvironmentVariables($path)
+
+    $statusFile = Join-Path $resolvedPath "status.html"
+
+    if (Test-Path $statusFile) {
+        Write-Output "[$($site.Name)] status.html exists at: $statusFile"
+    } else {
+        Write-Output "[$($site.Name)] status.html NOT found in: $resolvedPath"
+    }
+}
