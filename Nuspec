@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>MyApp</id>
+    <version>1.0.0</version>
+    <authors>YourName</authors>
+    <description>My published app as a NuGet package</description>
+  </metadata>
+  <files>
+    <file src="app\**\*" target="contentFiles\any\any\" />
+  </files>
+</package>
