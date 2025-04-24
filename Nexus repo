@@ -1,0 +1,10 @@
+$artifactUrl = "https://<nexus-url>/repository/<repo-name>/<group>/<artifact>/<version>/<artifact>-<version>.jar"
+$outputPath = "$(Build.ArtifactStagingDirectory)\artifact.jar"
+Invoke-WebRequest -Uri $artifactUrl -OutFile $outputPath
+
+
+$User = "your-nexus-username"
+$Password = "your-nexus-password"
+$Base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("$User:$Password"))
+
+Invoke-WebRequest -Uri $artifactUrl -OutFile $outputPath -Headers @{Authorization=("Basic {0}" -f $Base64AuthInfo)}
