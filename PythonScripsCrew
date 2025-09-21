@@ -1,0 +1,44 @@
+import requests
+from requests.auth import HTTPBasicAuth
+
+# ================================
+# CONFIG
+# ================================
+org_url = "http://tfs-server:8080/tfs/DefaultCollection"   # TFS Base URL
+project = "MyProject"                                      # Project name
+release_id = 1234                                          # Release ID
+env_id = 5678                                              # Environment ID
+username = ""                                              # Leave blank if using PAT
+pat_token = "YOUR_PERSONAL_ACCESS_TOKEN"                   # PAT for TFS auth
+
+# API version
+api_version = "4.1-preview.6"
+
+# ================================
+# CALL RELEASE DEPLOYMENT API
+# ================================
+url = f"{org_url}/{project}/_apis/release/releases/{release_id}/environments/{env_id}/tasks?api-version={api_version}"
+
+response = requests.get(url, auth=HTTPBasicAuth(username, pat_token))
+
+if response.status_code != 200:
+    print(f"Error: {response.status_code} -> {response.text}")
+    exit(1)
+
+data = response.json()
+
+# ================================
+# PARSE AND PRINT TASK + SERVER STATUS
+# ================================
+for task in data.get("value", []):
+    task_name = task.get("name")
+    task_status = task.get("status")
+
+    print(f"\nTask: {task_name} | Status: {task_status}")
+
+    # Deployment group jobs contain per-server execution details
+    for job in task.get("job", {}).get("tasks", []):
+        for server in job.get("agentExecution", {}).get("hosts", []):
+            server_name = server.get("name")
+            server_status = server.get("result")
+            print(f"   Server: {server_name} | Result: {server_status}")
